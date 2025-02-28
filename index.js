@@ -7,6 +7,10 @@ const { User } = require("./models/User");
 const config = require("./config/key");
 const { auth } = require("./middleware/auth");
 const axios = require("axios");
+const {
+  sendVerificationCode,
+  verifyCode,
+} = require("./middleware/authController.js");
 
 require("dotenv").config();
 const cors = require("cors");
@@ -132,6 +136,32 @@ app.post("/api/users/google-login", async (req, res) => {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
 });
+
+// 인증번호 발송 엔드포인트
+// app.post("/send-verification", (req, res) => {
+//   const { phoneNumber } = req.body;
+
+//   // 여기서 실제 SMS 발송 API를 호출해야 합니다
+//   // 예: Twilio, Nexmo 등의 SMS 서비스 사용
+//   const verificationCode = Math.floor(
+//     100000 + Math.random() * 900000
+//   ).toString();
+
+//   // 실제 구현에서는 SMS 서비스로 전송
+//   console.log(`Sending code ${verificationCode} to ${phoneNumber}`);
+
+//   res.json({
+//     success: true,
+//     code: verificationCode, // 실제 서비스에서는 코드 반환하지 않음
+//   });
+// });
+
+// 회원가입 요청에 대한 SMS 발송
+app.post("/send-verification", sendVerificationCode);
+// app.post("/send-code", sendVerificationCode);
+
+// 인증 코드 확인 요청
+app.post("/verify-code", verifyCode);
 
 const mongoose = require("mongoose");
 mongoose
