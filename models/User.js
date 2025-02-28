@@ -66,6 +66,7 @@ userSchema.methods.generateToken = async function (cb) {
     // jsonwebtoken을 이용해 토큰 생성하기기
     // jwt.sign({ foo: 'bar' }, 'shhhhh')
     let token = jwt.sign(user._id.toHexString(), "secretToken");
+    console.log("[User.js]generateToken ===> ", token);
     user.token = token;
     await user.save();
     return cb(null, user);
@@ -77,7 +78,11 @@ userSchema.methods.generateToken = async function (cb) {
 userSchema.statics.findByToken = async function (token, cb) {
   let user = this;
   // 토큰을 decode한다.
+  console.log("[User.js]findByToken ===> token", token);
+
+  // jwt.verify(token, process.env.GOOGLE_CLIENT_SECRET, function (err, decoded) {
   jwt.verify(token, "secretToken", function (err, decoded) {
+    console.log("[User.js]findByToken ===> decoded", decoded);
     // 유저 아이디를 이용해서 유저를 찾은 다음에
     // 클라이언트에서 가져온 token과 DB에 보관된 토큰이 일치하는지 확인
     user
