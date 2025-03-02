@@ -1,14 +1,14 @@
 const twilio = require("twilio");
 require("dotenv").config();
 
-console.log(
-  "process.env.TWILIO_ACCOUNT_SID ---> ",
-  process.env.TWILIO_ACCOUNT_SID
-);
-console.log(
-  "process.env.TWILIO_AUTH_TOKEN ---> ",
-  process.env.TWILIO_AUTH_TOKEN
-);
+// console.log(
+//   "process.env.TWILIO_ACCOUNT_SID ---> ",
+//   process.env.TWILIO_ACCOUNT_SID
+// );
+// console.log(
+//   "process.env.TWILIO_AUTH_TOKEN ---> ",
+//   process.env.TWILIO_AUTH_TOKEN
+// );
 // Twilio 설정
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -31,20 +31,20 @@ const formatPhoneNumber = (phoneNumber) => {
 const sendVerificationCode = async (req, res) => {
   let { phoneNumber } = req.body; // 사용자 전화번호
   phoneNumber = formatPhoneNumber(phoneNumber); // 국제번호 변환
-  console.log("phoneNumber ---> ", phoneNumber);
+  // console.log("phoneNumber ---> ", phoneNumber);
 
   // 인증된 번호인지 확인 (예시)
   const verifiedNumbers = ["+821024348842"]; // 이 부분은 인증된 번호들로 바꿔주세요.
   if (!verifiedNumbers.includes(phoneNumber)) {
     return res.status(400).send({ message: "인증되지 않은 번호입니다." });
   }
-  console.log("phoneNumber ---> ", phoneNumber);
+  // console.log("phoneNumber ---> ", phoneNumber);
 
   // 6자리 랜덤 인증 코드 생성
   const verificationCode = Math.floor(
     100000 + Math.random() * 900000
   ).toString(); // 함수 내 지역 변수로만 사용
-  console.log("verificationCode ---> ", verificationCode);
+  // console.log("verificationCode ---> ", verificationCode);
 
   try {
     // const verification = await client.verify.v2
