@@ -5,6 +5,7 @@ let auth = (req, res, next) => {
   // 1. client 쿠키에서 토큰을 가져온다.
   // let token = req.cookies.x_auth;
   let token = req.cookies.x_auth || req.headers.authorization?.split(" ")[1];
+  console.log("[auth]User req.headers ===> ", req.headers);
   console.log("[auth]User token ===> ", token);
   // console.log("[auth1]req.cookies.x_auth===> ", req.cookies.x_auth);
   // console.log(
