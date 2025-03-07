@@ -5,8 +5,8 @@
   "scripts": {
     "backend": "nodemon index.js",
     "build": "npx tsc",
+    "dev": "concurrently \"npx tsc --watch\" \"npm run backend\" \"cd ../QNA-Client/qna-client && npm run dev\"",
     "start": "node build/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon build/index.js\" ",
     "test": "jest --watchAll --detectOpenHandles"
   },
   "type": "commonjs",

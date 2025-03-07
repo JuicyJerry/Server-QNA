@@ -137,32 +137,6 @@ app.post("/api/users/google-login", async (req, res) => {
   }
 });
 
-// 인증번호 발송 엔드포인트
-// app.post("/send-verification", (req, res) => {
-//   const { phoneNumber } = req.body;
-
-//   // 여기서 실제 SMS 발송 API를 호출해야 합니다
-//   // 예: Twilio, Nexmo 등의 SMS 서비스 사용
-//   const verificationCode = Math.floor(
-//     100000 + Math.random() * 900000
-//   ).toString();
-
-//   // 실제 구현에서는 SMS 서비스로 전송
-// console.log(`Sending code ${verificationCode} to ${phoneNumber}`);
-
-//   res.json({
-//     success: true,
-//     code: verificationCode, // 실제 서비스에서는 코드 반환하지 않음
-//   });
-// });
-
-// 회원가입 요청에 대한 SMS 발송
-app.post("/send-verification", sendVerificationCode);
-// app.post("/send-code", sendVerificationCode);
-
-// 인증 코드 확인 요청
-app.post("/verify-code", verifyCode);
-
 const mongoose = require("mongoose");
 mongoose.connect(config.mongoUrI, {
   useNewUrlParser: true,
@@ -234,6 +208,8 @@ app.post("/api/users/login", (req, res) => {
 
 app.get("/api/users/auth", auth, (req, res) => {
   // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication 이 True라는 말.?? 아닐지도
+  console.log("[index]/api/users/auth (res) ---> ", res.user);
+
   res.status(200).json({
     _id: req.user._id,
     isAdmin: req.user.role === 0 ? false : true,
