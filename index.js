@@ -84,7 +84,7 @@ app.post("/api/users/google-login", async (req, res) => {
       const verified = jwt.verify(token, rsaPublicKey, {
         algorithms: ["RS256"],
       });
-      // console.log("[google-login] verified decoded ===> ", verified);
+      console.log("[google-login] verified decoded ===> ", verified);
 
       // 이후 사용자 정보 처리
     } catch (error) {
@@ -94,74 +94,64 @@ app.post("/api/users/google-login", async (req, res) => {
 
     // 사용자 정보 찾기
     let user = await User.findOne({ email: verified.email });
-    // console.log("[google-login] user ===> ", user);
-    if (!user) {
-      user = new User({
-        email: verified.email,
-        name: verified.name,
-        // 필요한 추가 정보 입력
-      });
-      // console.log("user info 1 ====> ", user);
-      user.generateToken((err, user) => {
-        if (err) return res.status(400).send(err);
-        // 토큰 저장 : 쿠키, 로컬 스토리지
-        res.cookie("x_auth", user.token).status(200).json({
-          loginSuccess: true,
-          userId: user._id,
+    console.log("[google-login] user ===> ", user);
+    // console.log("user info 1 ====> ", user);
+    user.generateToken((err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) {
+        user = new User({
+          email: verified.email,
+          name: verified.name,
+          token: verified.token,
+          // 필요한 추가 정보 입력
         });
-      });
-      await user.save(); // DB에 사용자 정보 저장
-      // console.log("user info 2 ====> ", user);
-      // console.log("req.cookies 2 ====> ", req.cookies);
-    }
+      }
+    });
+    console.log("user info 1 ====> ");
+
+    // 토큰 저장 : 쿠키, 로컬 스토리지
+    res.cookie("x_auth", user.token).status(200).json({
+      loginSuccess: true,
+      userId: user._id,
+    });
+
+    // res.cookie 주석 처리 후, await user.save() 이후 아래 코드부터 동작 안 함
+    // await user.save(); // DB에 사용자 정보 저장
+    console.log("user info 2 ====> ");
+    // console.log("req.cookies 2 ====> ", req.cookies);
 
     // console.log("user info 3 ====> ", user);
     // console.log("req.cookies 3 ====> ", req.cookies);
     // console.log("req.session 1 ====> ", req.session);
     // 세션에 사용자 정보 저장
-    req.session.user = user; // 세션에 사용자 정보 저장
+    // req.session.user = user; // 세션에 사용자 정보 저장
     // console.log("req.session 2 ====> ", req.session);
+    console.log("user info 3 ====> ");
 
-    res.status(200).json({
-      success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        // 필요한 추가 정보
-      },
-    });
+    // 토큰 저장 : 쿠키, 로컬 스토리지
+    // res.cookie("x_auth", user.token).status(200).json({
+    //   loginSuccess: true,
+    //   userId: user._id,
+    //   id: user._id,
+    //   email: user.email,
+    //   name: user.name,
+    // });
+    console.log("user info 4 ====> ");
+
+    // res.status(200).json({
+    //   success: true,
+    //   user: {
+    //     id: user._id,
+    //     email: user.email,
+    //     name: user.name,
+    //     // 필요한 추가 정보
+    //   },
+    // });
   } catch (error) {
     // console.error("Error during token verification:", error);
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
 });
-
-// 인증번호 발송 엔드포인트
-// app.post("/send-verification", (req, res) => {
-//   const { phoneNumber } = req.body;
-
-//   // 여기서 실제 SMS 발송 API를 호출해야 합니다
-//   // 예: Twilio, Nexmo 등의 SMS 서비스 사용
-//   const verificationCode = Math.floor(
-//     100000 + Math.random() * 900000
-//   ).toString();
-
-//   // 실제 구현에서는 SMS 서비스로 전송
-// console.log(`Sending code ${verificationCode} to ${phoneNumber}`);
-
-//   res.json({
-//     success: true,
-//     code: verificationCode, // 실제 서비스에서는 코드 반환하지 않음
-//   });
-// });
-
-// 회원가입 요청에 대한 SMS 발송
-app.post("/send-verification", sendVerificationCode);
-// app.post("/send-code", sendVerificationCode);
-
-// 인증 코드 확인 요청
-app.post("/verify-code", verifyCode);
 
 const mongoose = require("mongoose");
 mongoose.connect(config.mongoUrI, {
@@ -234,6 +224,8 @@ app.post("/api/users/login", (req, res) => {
 
 app.get("/api/users/auth", auth, (req, res) => {
   // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication 이 True라는 말.?? 아닐지도
+  console.log("[index]/api/users/auth (res) ---> ", res.user);
+
   res.status(200).json({
     _id: req.user._id,
     isAdmin: req.user.role === 0 ? false : true,
