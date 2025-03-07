@@ -153,6 +153,55 @@ app.post("/api/users/google-login", async (req, res) => {
   }
 });
 
+// Google 로그인 처리
+app.post("/api/users/kakao-login", async (req, res) => {
+  const { token } = req.body;
+  console.log("[kakao] token ---> ", token);
+  try {
+    // console.log("[google-login] check ===> ");
+
+    const kakaoResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${token.access_token}`,
+      },
+    });
+    console.log("[kakao-login] kakaoResponse ===>", kakaoResponse);
+
+    const userInfo = kakaoResponse.data;
+    console.log("[kakao-login] userInfo ===>", userInfo);
+
+    // 이미 해당 이메일로 가입된 사용자 찾기
+    let user = await User.findOne({ email: userInfo.kakao_account.email });
+    console.log("[kakao-login] user 1 ===>", user);
+    if (!user) {
+      // 새로운 사용자 생성
+      user = new User({
+        email: userInfo.kakao_account.email,
+        name: userInfo.properties.nickname,
+        token: token.access_token,
+        // 필요한 추가 정보 입력
+      });
+      console.log("[kakao-login] user 2 ===>", user);
+      await user.save(); // 사용자 정보 저장
+      console.log("[kakao-login] user 3 ===>", user);
+    }
+
+    // 로그인 후 JWT 생성
+    user.generateToken((err, user) => {
+      if (err) return res.status(400).send(err);
+
+      // 토큰을 쿠키에 저장
+      res.cookie("x_auth", user.token).status(200).json({
+        loginSuccess: true,
+        userId: user._id,
+      });
+    });
+  } catch (error) {
+    console.error("Error during Kakao login:", error);
+    return res.status(401).json({ success: false, message: "Invalid token" });
+  }
+});
+
 const mongoose = require("mongoose");
 mongoose.connect(config.mongoUrI, {
   useNewUrlParser: true,
