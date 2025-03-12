@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "backend": "nodemon index.js",
+    "backend": "nodemon index.ts",
     "build": "npx tsc",
     "dev": "concurrently \"npx tsc --watch\" \"npm run backend\" \"cd ../QNA-Client/qna-client && npm run dev\"",
     "start": "node build/index.js",
