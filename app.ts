@@ -1,5 +1,7 @@
 import express from "express";
 import { RedisClientType } from "redis";
+
+require("dotenv").config();
 const { LIST_KEY } = process.env;
 import { AuthRequest } from "./types/index";
 
@@ -20,7 +22,6 @@ export const createApp = (client: RedisClient) => {
   // } = require("./middleware/authController.js");
   const { sendVerificationCode } = require("./middleware/authController");
 
-  require("dotenv").config();
   const cors = require("cors");
   app.use(
     cors({
@@ -251,8 +252,8 @@ export const createApp = (client: RedisClient) => {
 
   const mongoose = require("mongoose");
   mongoose.connect(config.mongoUrI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000, // 서버 선택 타임아웃 설정
     socketTimeoutMS: 45000, // 소켓 연결 타임아웃 설정
   });
@@ -260,26 +261,27 @@ export const createApp = (client: RedisClient) => {
   // .catch((err) => console.log(err));
 
   app.get("/", (req: express.Request, res: express.Response) => {
-    res.status(200).send("Hello World! 새해복 많이 받으세요!!");
+    res.status(200).send("hello from express");
   });
 
-  app.post("/messages", async (request, response) => {
-    const { message } = request.body;
+  app.post("/messages", async (req: express.Request, res: express.Response) => {
+    console.log("[message/post] req.body ===> ", req.body);
+    const { message } = req.body;
+    console.log("[message/post] message ===> ", message);
+    // console.log("[message/post] LIST_KEY ===> ", LIST_KEY);
 
-    if (LIST_KEY === undefined) {
-      response.status(500).send("[message/post]LIST_KEY is not defined");
-    } else {
-      await client.lPush(LIST_KEY, message);
-      response.status(200).send("Message added to list");
-    }
+    await client.lPush(LIST_KEY!, message);
+    console.log("[message/post] message ===> ", message);
+    res.status(200).send("Message added to list");
   });
 
-  app.get("/messages", async (request, response) => {
+  app.get("/messages", async (req: express.Request, res: express.Response) => {
     if (LIST_KEY === undefined) {
-      response.status(500).send("[messages/get]LIST_KEY is not defined");
+      res.status(500).send("[messages/get]LIST_KEY is not defined");
     } else {
       const messages = await client.lRange(LIST_KEY, 0, -1);
-      response.status(200).send(messages);
+      console.log("[messages/get] messages ===> ", messages);
+      res.status(200).send(messages);
     }
   });
 
