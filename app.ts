@@ -14,10 +14,11 @@ export const createApp = (client: RedisClient) => {
   const config = require("./config/key");
   const { auth } = require("./middleware/auth");
   const axios = require("axios");
-  //   const {
-  //     sendVerificationCode,
-  //     verifyCode,
-  //   } = require("./middleware/authController.js");
+  // const {
+  //   sendVerificationCode,
+  //   verifyCode,
+  // } = require("./middleware/authController.js");
+  const { sendVerificationCode } = require("./middleware/authController");
 
   require("dotenv").config();
   const cors = require("cors");
@@ -62,6 +63,22 @@ export const createApp = (client: RedisClient) => {
 
     return jwkToPem(jwk);
   };
+
+  // 인증번호
+  app.post(
+    // "/api/users/send-verification",
+    "/send-verification",
+    async (req: express.Request, res: express.Response) => {
+      const number = req.body.phoneNumber;
+      console.log("[send-verification] number ===> ", number);
+
+      if (number) {
+        sendVerificationCode(number);
+      } else {
+        res.status(400).send("Invalid phone number");
+      }
+    }
+  );
 
   // Google 로그인 처리
   app.post(
@@ -294,7 +311,7 @@ export const createApp = (client: RedisClient) => {
   app.post(
     "/api/users/login",
     (req: express.Request, res: express.Response) => {
-      // console.log("[Server/index] login ===> ", req.body);
+      console.log("[Server/index] login ===> ", req.body);
 
       // 1. 요청된 이메일을 데이터베이스에서 찾는다
       User.findOne({ email: req.body.email })
