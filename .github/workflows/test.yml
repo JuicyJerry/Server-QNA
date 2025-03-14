@@ -24,6 +24,7 @@ jobs:
         env:
           LIST_KEY: ${{ secrets.LIST_KEY }}
           MONGO_URI: ${{ secrets.MONGO_URI  }}
+          NODE_ENV: ${{ secrets.NODE_ENV  }}
         run: npm run test:ci
       - name: test build
         run: npm run build
