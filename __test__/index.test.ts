@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import request from "supertest";
 import { createApp, RedisClient } from "../app";
 import * as redis from "redis";
@@ -48,6 +49,8 @@ describe("POST", () => {
   });
 
   afterAll(async () => {
+    await mongoose.connection.close();
+    await app.quit();
     await client.flushDb();
     await client.quit();
   });
