@@ -1,7 +1,8 @@
 import request from "supertest";
 import { createApp, RedisClient } from "../app";
 import * as redis from "redis";
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 let app: Express.Application;
 let client: RedisClient;
