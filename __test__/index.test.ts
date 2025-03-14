@@ -49,9 +49,12 @@ describe("POST", () => {
   });
 
   afterAll(async () => {
-    await mongoose.connection.close();
-    await app.quit();
+    console.log("Closing Redis connection...");
     await client.flushDb();
     await client.quit();
+    console.log("Redis connection closed.");
+    console.log("Closing MongoDB connection...");
+    await mongoose.connection.close();
+    console.log("MongoDB connection closed.");
   });
 });
