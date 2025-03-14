@@ -251,7 +251,7 @@ export const createApp = (client: RedisClient) => {
   );
 
   const mongoose = require("mongoose");
-  mongoose.connect(config.MONGO_URI, {
+  mongoose.connect(config.mongoUrI, {
     // useNewUrlParser: true,
     // useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000, // 서버 선택 타임아웃 설정
