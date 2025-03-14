@@ -9,7 +9,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Node.js setup
-        uses: action/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
       - name: Install npm packages
