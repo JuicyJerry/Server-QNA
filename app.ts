@@ -263,7 +263,7 @@ export const createApp = (client: RedisClient) => {
   // .catch((err) => console.log(err));
 
   app.get("/", (req: express.Request, res: express.Response) => {
-    res.status(200).send("hello from express");
+    res.status(200).send("hello from express, deployed on AWS Lightsail");
   });
 
   app.post("/messages", async (req: express.Request, res: express.Response) => {
