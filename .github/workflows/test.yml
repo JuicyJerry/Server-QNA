@@ -1,0 +1,31 @@
+name: test
+
+on: pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Install npm packages
+        run: npm ci
+      - name: Install redis-server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-server
+      - name: run redis-server
+        run: redis-server --daemonize yes --requirepass test_env --port 6380
+      - name: Run tests
+        env:
+          LIST_KEY: ${{ secrets.LIST_KEY }}
+          MONGO_URI: ${{ secrets.MONGO_URI  }}
+          NODE_ENV: ${{ secrets.NODE_ENV  }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET  }}
+        run: npm run test:ci
+      - name: test build
+        run: npm run build
