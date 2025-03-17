@@ -1,0 +1,10 @@
+config:
+  target: http://localhost:5000
+  phases:
+    - duration: 5
+      arrivalRate: 1000
+
+scenarios:
+  - flow:
+      - get:
+          url: "/messages"
