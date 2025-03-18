@@ -251,7 +251,7 @@ export const createApp = (client: RedisClient) => {
   );
 
   const mongoose = require("mongoose");
-  console.log("[Server/index] config.MONGO_URI ===> ", config.MONGO_URI);
+  // console.log("[Server/index] config.MONGO_URI ===> ", config.MONGO_URI);
 
   mongoose.connect(config.MONGO_URI, {
     // useNewUrlParser: true,
@@ -270,6 +270,7 @@ export const createApp = (client: RedisClient) => {
   }
 
   app.get("/fibonacci/:n", (req: express.Request, res: express.Response) => {
+    console.log(process.env.pm_id);
     const n = parseInt(req.params.n, 10);
     const result = fibonacci(n);
     res.send(`fibonacci of ${n} is ${result}`);
