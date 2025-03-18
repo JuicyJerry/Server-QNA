@@ -262,6 +262,19 @@ export const createApp = (client: RedisClient) => {
   // .then(() => console.log("MongoDB Connected..."))
   // .catch((err) => console.log(err));
 
+  function fibonacci(n: number): number {
+    if (n <= 1) {
+      return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  }
+
+  app.get("/fibonacci/:n", (req: express.Request, res: express.Response) => {
+    const n = parseInt(req.params.n, 10);
+    const result = fibonacci(n);
+    res.send(`fibonacci of ${n} is ${result}`);
+  });
+
   app.get("/", (req: express.Request, res: express.Response) => {
     res.status(200).send("hello from express, deployed on AWS Lightsail!");
   });
