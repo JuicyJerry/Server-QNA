@@ -27,8 +27,6 @@ jobs:
             git pull origin main || exit 1
             npm install || exit 1
             npm run build || exit 1
-            # sudo pkill node || exit 1
-            # sudo npm run start & npx wait-on https://localhost
-            sudo pm2 reload
+            sudo pm2 reload all || sudo pm2 start npm -- start
             exit
             "
