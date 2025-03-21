@@ -8,4 +8,4 @@ config:
 scenarios:
   - flow:
       - get:
-          url: "/fibonacci/35"
+          url: "/api/fibonacci/30"
