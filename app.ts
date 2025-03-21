@@ -280,26 +280,34 @@ export const createApp = (client: RedisClient) => {
     res.status(200).send("hello from express, deployed on AWS Lightsail!");
   });
 
-  app.post("/messages", async (req: express.Request, res: express.Response) => {
-    console.log("[message/post] req.body ===> ", req.body);
-    const { message } = req.body;
-    console.log("[message/post] message ===> ", message);
-    // console.log("[message/post] LIST_KEY ===> ", LIST_KEY);
+  app.post(
+    "/api/messages",
+    async (req: express.Request, res: express.Response) => {
+      console.log("[message/post] req.body ===> ", req.body);
+      const { message } = req.body;
+      console.log("[message/post] message ===> ", message);
+      // console.log("[message/post] LIST_KEY ===> ", LIST_KEY);
 
-    await client.lPush(LIST_KEY!, message);
-    console.log("[message/post] message ===> ", message);
-    res.status(200).send("Message added to list");
-  });
-
-  app.get("/messages", async (req: express.Request, res: express.Response) => {
-    if (LIST_KEY === undefined) {
-      res.status(500).send("[messages/get]LIST_KEY is not defined");
-    } else {
-      const messages = await client.lRange(LIST_KEY, 0, -1);
-      console.log("[messages/get] messages ===> ", messages);
-      res.status(200).send(messages);
+      await client.lPush(LIST_KEY!, message);
+      console.log("[message/post] message ===> ", message);
+      res.status(200).send("Message added to list");
     }
-  });
+  );
+
+  app.get(
+    "/api/messages",
+    async (req: express.Request, res: express.Response) => {
+      console.log("[messages/get] LIST_KEY ===> ", LIST_KEY);
+
+      if (LIST_KEY === undefined) {
+        res.status(500).send("[messages/get]LIST_KEY is not defined");
+      } else {
+        const messages = await client.lRange(LIST_KEY, 0, -1);
+        console.log("[messages/get] messages ===> ", messages);
+        res.status(200).send(messages);
+      }
+    }
+  );
 
   app.get("/api/hello", (req: express.Request, res: express.Response) => {
     res.send("안녕하십니까 행님");
