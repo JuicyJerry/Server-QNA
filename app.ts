@@ -297,6 +297,8 @@ export const createApp = (client: RedisClient) => {
   app.get(
     "/api/messages",
     async (req: express.Request, res: express.Response) => {
+      console.log("[messages/get] LIST_KEY ===> ", LIST_KEY);
+
       if (LIST_KEY === undefined) {
         res.status(500).send("[messages/get]LIST_KEY is not defined");
       } else {
