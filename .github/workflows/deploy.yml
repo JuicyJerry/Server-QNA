@@ -30,3 +30,6 @@ jobs:
             sudo pm2 reload all || sudo pm2 start npm -- start
             exit
             "
+      - name: Test SSH connection
+        run: |
+          ssh -v ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} exit
