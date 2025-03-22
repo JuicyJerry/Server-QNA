@@ -20,6 +20,10 @@ jobs:
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts      
           chmod 644 ~/.ssh/known_hosts
 
+      - name: Test SSH connection
+        run: |
+          ssh -v -p 2222 ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} exit
+
       - name: SSH and deploy
         run: |
           ssh -p 2222 ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} "
@@ -30,6 +34,3 @@ jobs:
             sudo pm2 reload all || sudo pm2 start npm -- start
             exit
             "
-      - name: Test SSH connection
-        run: |
-          ssh -v ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} exit
