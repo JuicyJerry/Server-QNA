@@ -22,7 +22,7 @@ jobs:
 
       - name: SSH and deploy
         run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} "
+          ssh -p 2222 ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_PUBLIC_IP }} "
             cd Server-QNA
             git pull origin main || exit 1
             npm install || exit 1
